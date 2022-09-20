@@ -1,0 +1,82 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: ui-monospace,
+     Menlo, Monaco,
+     "Cascadia Mono", "Segoe UI Mono",
+     "Roboto Mono",
+     "Oxygen Mono",
+     "Ubuntu Monospace",
+     "Source Code Pro",
+     "Fira Mono",
+     "Droid Sans Mono",
+     "Courier New", monospace;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+.container {
+    padding: 2rem;
+    display: block;
+
+}
+
+h1 {
+    font-weight: normal;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+}
+
+.row:first-child .letter {
+    border-top: 1px solid #333;
+}
+
+.letter {
+    padding: 10px;
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+}
+
+.letter:first-child {
+    border-left: 1px solid #333;
+}
+
+.letter:hover {
+    cursor: not-allowed;
+}
+
+
+.letter:hover {
+    cursor: pointer;
+    background: #ccc;
+}
+
+.letter.selected {
+    background: #66aacc;
+}
+
+.result {
+    text-align: center;
+    margin: 2rem auto;
+    font-size: 0.875rem;
+    color: #ee6666;
+}
+
+.result.correct {
+    color: #66aa66
+}
+
+.stats {
+    max-width: 18rem;
+    text-align: center;
+    margin: 2rem auto;
+    font-size: 0.875rem;
+}

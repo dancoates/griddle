@@ -5,34 +5,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Griddle</title>
-    <style>
-        .row {
-
-            display: block;
-            overflow: hidden;
-        }
-
-        .row:first-child .letter {
-            border-top: 1px solid #333;
-        }
-
-        .letter {
-            float: left;
-            padding: 10px;
-            border-right: 1px solid #333;
-            border-bottom: 1px solid #333;
-            font-family: monospace;
-        }
-
-        .letter:first-child {
-            border-left: 1px solid #333;
-        }
-    </style>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+    <div class="container">
+        <h1>griddle</h1>
+        <div id="grid"></div>
 
-    <div id="container"></div>
-
+        <pre class="result"></pre>
+        <p class="stats"></p>
+    </div>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js">
+</script>
     <script src="./script.js"></script>
 </body>
 </html>

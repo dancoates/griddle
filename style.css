@@ -13,6 +13,11 @@ body, html {
      "Courier New", monospace;
 }
 
+
+body.dark {
+    background: #111;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -28,26 +33,37 @@ h1 {
     font-weight: normal;
     text-align: center;
     font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+
+body.dark h1 {
+    color: #ddd;
+}
+
+#grid {
+    display: table;
+    margin: 0 auto;
+    border-collapse: collapse;
 }
 
 .row {
-    display: flex;
-    justify-content: center;
+    transition: 0.2s transform ease-in-out;
+    margin-bottom: -1px;
+    border-collapse: collapse;
 }
 
-.row:first-child .letter {
-    border-top: 1px solid #333;
-}
 
 .letter {
     padding: 10px;
-    border-right: 1px solid #333;
-    border-bottom: 1px solid #333;
+    border: 1px solid #333;
+    display: table-cell;
+    border-collapse: collapse;
 }
 
-.letter:first-child {
-    border-left: 1px solid #333;
+body.dark .letter {
+    color: #ddd;
 }
+
 
 .letter:hover {
     cursor: not-allowed;
@@ -59,7 +75,13 @@ h1 {
     background: #ccc;
 }
 
-.letter.selected {
+body.dark .letter:hover {
+    background: #333;
+    color: #ccc;
+}
+
+
+.letter.selected, body.dark .letter.selected {
     background: #66aacc;
 }
 
@@ -79,4 +101,97 @@ h1 {
     text-align: center;
     margin: 2rem auto;
     font-size: 0.875rem;
+}
+
+body.dark .stats {
+    color: #ddd;
+}
+
+
+.subhead {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.how-to-play, .close-how-to-play {
+    outline: none;
+    border: none;
+    color: #66aacc;
+    text-decoration: underline;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.how-to-play:hover, .close-how-to-play:hover {
+    color: #3c7c9c;
+}
+
+
+
+.instructions {
+    display: none;
+    position: fixed;
+    background: white;
+    max-width: 100%;
+    max-height: 100%;
+    overflow-y: auto;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 1px solid #333;
+    font-size: 0.875rem;
+    padding: 2rem;
+    width: 640px;
+    text-align: center;
+
+    box-shadow: 4px 4px 0 #999;
+}
+
+
+body.dark .instructions {
+    background: #111;
+    color: #ddd;
+    box-shadow: 4px 4px 0 #333;
+}
+
+
+.instructions.visible {
+    display: block;
+}
+
+.settings-heading {
+    font-weight: bold;
+    color: #333;
+}
+
+body.dark .settings-heading {
+    color: #ccc;
+}
+
+
+
+.settings {
+    border-top: 1px solid #eee;
+    font-size: 0.7rem;
+    color: #666;
+    text-align: center;
+}
+
+body.dark .settings {
+    border-top: 1px solid #333;
+}
+
+
+.settings-row {
+    margin: 0.5rem 0;
+}
+
+.settings-row span {
+    cursor: pointer;
+}
+
+.settings-row span:hover, .settings-row span.active {
+    color: #3c7c9c;
 }

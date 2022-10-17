@@ -4,16 +4,94 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Griddle</title>
+    <title>griddle</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <div class="container">
         <h1>griddle</h1>
+        <div class="subhead">
+            <button class="how-to-play">how to play?</button>
+        </div>
         <div id="grid"></div>
 
         <pre class="result"></pre>
         <p class="stats"></p>
+
+
+        <div class="settings">
+            <p class="settings-heading">settings</p>
+            <div class="settings-row">
+                grid size: <span data-gridsize="3">3</span> | <span data-gridsize="4">4</span> | <span data-gridsize="5" class="active">5</span> | <span data-gridsize="6">6</span> | <span data-gridsize="7">7 (might be slow)</span>
+            </div>
+
+            <div class="settings-row">
+                <span class="active" data-gridtype="today">today's grid</span> | <span data-gridtype="random">random grid</span>
+            </div>
+
+
+            <div class="settings-row">
+                theme: <span class="active" data-theme="light">light mode</span> | <span data-theme="dark">dark mode</span>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="instructions">
+
+        <p><strong>how to play?</strong></p>
+
+        <button class="close-how-to-play">close</button>
+
+        <p>
+            griddle is a simple game where you find a word by picking one letter from each row of the grid.
+        </p>
+
+        <p>
+            when you have made a valid word your score will be displayed.
+        </p>
+
+        <p>
+            there are two ways to play the game, either aiming for the highest possible score, or the lowest possible score.
+        </p>
+
+        <p>
+            the score is calculated based on how many other valid words start with the same letters as the word you selected.
+        </p>
+
+        <p>
+            for example for the 4x4 grid <br>
+            <pre>
+fmrt
+atui
+ntls
+tpek
+            </pre>
+
+        </p>
+
+        <p>
+            there are 53 possible words, the highest possible score is 35 and the lowest possible score is 11.
+        </p>
+
+        <p>
+            the highest scoring word is <strong>mine</strong> as there are 22 valid words that start with <strong>m</strong>, 9 valid words that start with <strong>mi</strong>, 3 valid words that start with <strong>min</strong>, and one valid word that starts with <strong>mint</strong>
+        </p>
+
+        <p>22 + 9 + 3 + 1 = 35</p>
+
+
+        <p>
+            the lowest scoring word is <strong>fate</strong> as there are 7 valid words that start with <strong>f</strong>, 2 valid words that start with <strong>fa</strong>, 1 valid word that starts with <strong>fat</strong>, and one valid word that starts with <strong>fate</strong>
+        </p>
+
+        <p>7 + 2 + 1 + 1 = 11</p>
+
+        <p>it is possible for there to be multiple words that match the highest and lowest scores</p>
+
+
     </div>
     <script src="//cdnjs.cloudflare.com/ajax/libs/seedrandom/3.0.5/seedrandom.min.js">
 </script>

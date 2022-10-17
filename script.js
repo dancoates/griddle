@@ -1,4 +1,6 @@
 const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+let gridSize = 5;
+let gridType = 'today';
 
 function createGrid(gridSize, words, randomItem) {
     const grid = [];
@@ -44,9 +46,11 @@ function renderGrid(grid, container, opts) {
 }
 
 
+let wordsFuture;
+
 async function getWords(gridSize) {
-    const wordsResp = await fetch('./words.txt');
-    const wordsList = await wordsResp.text();
+    wordsFuture = wordsFuture || fetch('./words.txt').then(resp => resp.text());
+    const wordsList = await wordsFuture;
     const allWords = wordsList.split('\n');
     return allWords.filter(ww => ww.length === gridSize).map(ww => ww.toLowerCase());
 }
@@ -118,37 +122,103 @@ function calcScores(gridWords) {
 function renderStats(scoredWords) {
     const elem = document.querySelector('.stats');
 
-    const text = `There are ${scoredWords.length} words. The highest possible score is ${scoredWords[0].totalScore}. The lowest possible score is ${scoredWords[scoredWords.length -1].totalScore}.`
+    const text = `there are ${scoredWords.length} words. the highest possible score is ${scoredWords[0].totalScore}. the lowest possible score is ${scoredWords[scoredWords.length -1].totalScore}.`
     elem.textContent = text;
 }
 
 
-function renderResult(word, scoredWords) {
+function renderResult(word, scoredWords, letterElems) {
     const elem = document.querySelector('.result');
 
     const matchedWord = scoredWords.find(ww => ww.word === word);
     let text = '';
+
+    document.querySelectorAll('.row').forEach(ii => ii.setAttribute('style', ''));
+
     if(matchedWord) {
 
-        const breakdown = matchedWord.rows.map((row) => {
-            const prefixPad = new Array(matchedWord.word.length - row.prefix.length).fill('_').join('');
-            const scorePad = new Array(3 - row.score.toString().length).fill('0').join('');
-            return `(${scorePad}${row.score}) ${row.prefix}${prefixPad}: ${row.words.join(', ')}`;
-        }).join('\n') + `\n____\n(${matchedWord.totalScore}) total`
-        elem.textContent = `${word} has a score of ${matchedWord.totalScore}\n${breakdown}`;
+        elem.textContent = `${word} has a score of ${matchedWord.totalScore}`;
         elem.classList.add('correct');
+
+
+        letterElems.forEach(letter => {
+            const parent = letter.parentElement;
+            const siblings = Array.from(parent.querySelectorAll('.letter'));
+            const middleLetter = siblings[Math.floor((siblings.length - 1) / 2)];
+
+            const selectedLetterBox = letter.getBoundingClientRect();
+            const middleLetterBox = middleLetter.getBoundingClientRect();
+
+            const offset = middleLetterBox.x - selectedLetterBox.x;
+
+            parent.setAttribute('style', `transform: translateX(${offset}px)`);
+        })
 
     } else {
         elem.textContent = `${word} is not a word`;
         elem.classList.remove('correct');
     }
-
 }
 
-(async function() {
+function setupConfig() {
+    document.querySelector('.how-to-play').addEventListener('click', () => {
+        document.querySelector('.instructions').classList.add('visible');
+    });
+
+    document.addEventListener('click', (e) => {
+        if(e.target !== document.querySelector('.how-to-play')) {
+            document.querySelector('.instructions').classList.remove('visible');
+        }
+    });
+
+
+    document.querySelectorAll('[data-theme]').forEach(el => {
+        el.addEventListener('click', (e) => {
+            const theme = e.target.dataset.theme;
+            localStorage.setItem('theme', theme);
+            e.target.parentElement.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+            e.target.classList.add('active');
+            if(theme === 'dark') {
+                document.body.classList.add('dark');
+            } else {
+                document.body.classList.remove('dark');
+            }
+
+        });
+    });
+
+
+    document.querySelectorAll('[data-gridtype]').forEach(el => {
+        el.addEventListener('click', (e) => {
+            gridType = e.target.dataset.gridtype;
+            e.target.parentElement.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+            e.target.classList.add('active');
+            setupGame(gridSize, gridType);
+        });
+    });
+
+    document.querySelectorAll('[data-gridsize]').forEach(el => {
+        el.addEventListener('click', (e) => {
+            gridSize = parseInt(e.target.dataset.gridsize);
+            e.target.parentElement.querySelectorAll('.active').forEach(el => el.classList.remove('active'));
+            e.target.classList.add('active');
+            setupGame(gridSize, gridType);
+        });
+    });
+}
+
+async function setupGame(gridSize, gridType) {
+    try {
+        if(window.localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark');
+            document.querySelectorAll('[data-theme]').forEach(el => el.classList.remove('active'));
+            document.querySelector('[data-theme="dark"]').classList.add('active');
+        }
+    } catch(err) {
+        console.warn('unable to get theme from local storage', err);
+    }
 
     const container = document.getElementById('grid');
-    const gridSize = 7;
 
     const randomItem = (list) => list[Math.floor(Math.random() * list.length)];
 
@@ -157,26 +227,35 @@ function renderResult(word, scoredWords) {
         return (list) => list[Math.floor(rng() * list.length)];
     })();
 
+    const randomMethod = gridType === 'today' ? randomItemDay : randomItem;
+
     const words = await getWords(gridSize);
-    const grid = createGrid(gridSize, words, randomItemDay);
+    const grid = createGrid(gridSize, words, randomMethod);
 
     const wordSet = new Set(words);
     const gridStrings = getStringsInGrid(grid, wordSet);
     const gridWords = gridStrings.filter(ss => wordSet.has(ss));
     const scoredWords = calcScores(gridWords);
 
+    document.querySelector('.result').textContent = '';
 
-    renderGrid(grid, container, {onClick: () => {
-        const letters = Array.from(document.querySelectorAll('.letter.selected')).map(ee => ee.textContent);
-        const word = letters.join('');
-        if(word.length === gridSize) {
-            renderResult(word, scoredWords);
-        } else {
-            document.querySelector('.result').textContent = '';
+    renderGrid(grid, container, {
+        onClick: () => {
+            const letterElems = Array.from(document.querySelectorAll('.letter.selected'));
+            const letters = letterElems.map(ee => ee.textContent);
+            const word = letters.join('');
+            if(word.length === gridSize) {
+                renderResult(word, scoredWords, letterElems);
+            } else {
+                document.querySelector('.result').textContent = '';
+            }
         }
-    }});
+    });
 
 
     renderStats(scoredWords);
+}
 
-})();
+
+setupConfig();
+setupGame(gridSize, gridType).catch(err => console.error(err));
